@@ -48,7 +48,7 @@ flowchart LR
 
     Detener -.->|include| Reto
     Detener -.->|include| Informe
-    ## 🧠 Reflexiones y Toma de Decisiones
+
 
 ### 1. Decisiones de Diseño y SOLID
 * **Encapsulación estricta:** Todos los atributos de las clases (`Alarm`, `SoundProfile`, etc.) son privados. El estado solo se modifica a través de métodos controlados (ej. `snooze()` o `toggleVacationMode()`).

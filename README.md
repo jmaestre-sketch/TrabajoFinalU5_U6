@@ -46,8 +46,8 @@ flowchart LR
     Usuario --> Detener
     Usuario --> Vacaciones
 
-    Detener -. "<< include >>" .-> Reto
-    Detener -. "<< include >>" .-> Informe
+    Detener -.->|include| Reto
+    Detener -.->|include| Informe
     ## 🧠 Reflexiones y Toma de Decisiones
 
 ### 1. Decisiones de Diseño y SOLID

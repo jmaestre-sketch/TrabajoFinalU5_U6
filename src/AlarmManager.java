@@ -4,19 +4,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AlarmManager {
-    // Atributo privado: La lista que almacena todas las alarmas en memoria
     private List<Alarm> alarms;
+    // NUEVO ATRIBUTO: Estado global del modo vacaciones
+    private boolean isVacationModeActive;
 
-    // Constructor
+    // Constructor actualizado
     public AlarmManager() {
         this.alarms = new ArrayList<>();
+        this.isVacationModeActive = false; // Por defecto, no estamos de vacaciones
+    }
+
+    // NUEVO MÉTODO: Activar/Desactivar modo vacaciones
+    public void toggleVacationMode() {
+        this.isVacationModeActive = !this.isVacationModeActive;
+        System.out.println("[VACACIONES] El Modo Vacaciones ahora está " 
+                + (isVacationModeActive ? "ACTIVADO (Alarmas suspendidas)" : "DESACTIVADO (Alarmas normales)"));
     }
 
     // --- MÉTODOS DE GESTIÓN DE ALARMAS ---
 
-    // Añadir una alarma evitando duplicados exactos
     public void addAlarm(Alarm newAlarm) {
-        // Regla de negocio para evitar duplicados: No permitir misma hora en los mismos días
         for (Alarm a : alarms) {
             if (a.getTime().equals(newAlarm.getTime()) && a.getRepeatDays().equals(newAlarm.getRepeatDays())) {
                 System.out.println("[ERROR] Ya existe una alarma programada exactamente a las " + newAlarm.getTime() + " para esos días.");
@@ -27,7 +34,6 @@ public class AlarmManager {
         System.out.println("[MANAGER] Alarma '" + newAlarm.getLabel() + "' añadida correctamente.");
     }
 
-    // Eliminar una alarma mediante su ID único
     public boolean deleteAlarm(String id) {
         for (Alarm a : alarms) {
             if (a.getId().equals(id)) {
@@ -36,13 +42,9 @@ public class AlarmManager {
                 return true;
             }
         }
-        System.out.println("[MANAGER] No se encontró ninguna alarma con el ID especificado.");
         return false;
     }
 
-    // --- MÉTODOS DE SIMULACIÓN Y COMPROBACIÓN ---
-
-    // Consulta y devuelve solo las alarmas que están activas actualmente
     public List<Alarm> getActiveAlarms() {
         List<Alarm> activeList = new ArrayList<>();
         for (Alarm a : alarms) {
@@ -53,30 +55,32 @@ public class AlarmManager {
         return activeList;
     }
 
-    // Comprueba qué alarmas deben sonar en un momento específico (Hora y Día)
+    // MÉTODO MODIFICADO: Ahora comprueba si estamos de vacaciones antes de hacer sonar nada
     public void checkAndTriggerAlarms(LocalTime currentTime, DayOfWeek currentDay) {
         System.out.println("\n[RELOJ] Comprobando alarmas para las " + currentTime + " del día " + currentDay + "...");
         
+        // REGLA DE NEGOCIO AVANZADA: Si el modo vacaciones está activo, se interrumpe el flujo
+        if (isVacationModeActive) {
+            System.out.println("[VACACIONES] Zzz... El modo vacaciones está activo. Se ignoran todas las alarmas.");
+            return; 
+        }
+
         List<Alarm> activeAlarms = getActiveAlarms();
-        
         for (Alarm a : activeAlarms) {
-            // Comprobamos si coincide la hora (ignorando los segundos)
             boolean sameHour = a.getTime().getHour() == currentTime.getHour();
             boolean sameMinute = a.getTime().getMinute() == currentTime.getMinute();
-            
-            // Comprobamos si la alarma debe sonar hoy (si es diaria o si el día de hoy está en su lista)
             boolean shouldSoundToday = a.getRepeatDays().isEmpty() || a.getRepeatDays().contains(currentDay);
 
             if (sameHour && sameMinute && shouldSoundToday) {
-                // Si dos alarmas coinciden al mismo tiempo, el bucle las procesa y dispara secuencialmente
                 a.trigger();
             }
         }
     }
 
-    // Listar todas las alarmas en el sistema (Para depuración)
     public void listAllAlarms() {
         System.out.println("\n=== LISTA DE ALARMAS EN EL SISTEMA ===");
+        // Añadimos información del modo vacaciones al listado
+        System.out.println("ESTADO MODO VACACIONES: " + (isVacationModeActive ? "ACTIVO 🏖️" : "INACTIVO 👁️"));
         if (alarms.isEmpty()) {
             System.out.println("No hay alarmas configuradas.");
             return;
@@ -84,9 +88,13 @@ public class AlarmManager {
         for (Alarm a : alarms) {
             System.out.println("- [" + (a.isActive() ? "ACTIVA" : "INACTIVA") + "] " 
                     + a.getLabel() + " a las " + a.getTime() 
-                    + " | Días: " + (a.getRepeatDays().isEmpty() ? "Todos" : a.getRepeatDays())
-                    + " | ID: " + a.getId());
+                    + " | Días: " + (a.getRepeatDays().isEmpty() ? "Todos" : a.getRepeatDays()));
         }
         System.out.println("=======================================\n");
+    }
+
+    // Getter para el Main
+    public boolean isVacationModeActive() {
+        return isVacationModeActive;
     }
 }

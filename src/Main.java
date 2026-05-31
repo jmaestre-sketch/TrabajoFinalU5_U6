@@ -60,5 +60,19 @@ public class Main {
         workAlarm.stop();
 
         System.out.println("\n=== FIN DE LA SIMULACIÓN BASE ===");
+
+
+        // --- SIMULACIÓN MODO VACACIONES ---
+        System.out.println("\n--- ACCIÓN: El usuario se va de vacaciones ---");
+        manager.toggleVacationMode(); // Lo activamos
+
+        System.out.println("\n--- SIMULANDO: Siguiente alarma en vacaciones ---");
+        // Intentamos simular la alarma de los lunes otra vez
+        manager.checkAndTriggerAlarms(LocalTime.of(7, 0), DayOfWeek.MONDAY); 
+        
+        System.out.println("\n--- ACCIÓN: El usuario vuelve de vacaciones ---");
+        manager.toggleVacationMode(); // Lo desactivamos
+
     }
 }
+

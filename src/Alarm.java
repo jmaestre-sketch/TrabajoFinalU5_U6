@@ -12,6 +12,8 @@ public class Alarm {
     private List<DayOfWeek> repeatDays; // Lista de días de la semana que se repite
     private SoundProfile soundProfile;
     private int snoozeCount;            // Para registrar estadísticas de uso futuro
+    private MathChallenge mathChallenge;
+
 
     // Constructor completo
     public Alarm(String label, LocalTime time, List<DayOfWeek> repeatDays, SoundProfile soundProfile) {
@@ -22,6 +24,7 @@ public class Alarm {
         this.soundProfile = soundProfile;
         this.isActive = true;                   // Por defecto, una alarma nace activa
         this.snoozeCount = 0;
+        this.mathChallenge = new MathChallenge(); // Cada alarma tiene su propio reto
     }
 
     // --- MÉTODOS DE NEGOCIO OBLIGATORIOS ---
@@ -43,12 +46,22 @@ public class Alarm {
     }
 
     // Detener alarma
+    // Detener alarma con validación del reto matemático
     public void stop() {
-        System.out.println("[STOP] Alarma '" + label + "' detenida con éxito.");
-        // Si no es una alarma recurrente (no tiene días de repetición), se desactiva sola al sonar
-        if (repeatDays == null || repeatDays.isEmpty()) {
-            this.isActive = false;
-            System.out.println("[ALARMA] '" + label + "' se ha desactivado automáticamente por no ser recurrente.");
+        System.out.println("[STOP] Intentando detener la alarma '" + label + "'...");
+        
+        // Llamamos al reto. El programa se pausará aquí esperando la respuesta del usuario.
+        boolean solved = mathChallenge.solveChallenge();
+
+        if (solved) {
+            System.out.println("[ALARMA] '" + label + "' detenida definitivamente.");
+            if (repeatDays == null || repeatDays.isEmpty()) {
+                this.isActive = false;
+                System.out.println("[ALARMA] '" + label + "' se ha desactivado automáticamente por no ser recurrente.");
+            }
+        } else {
+            System.out.println("[ALARMA] ¡No pudiste detenerla! La alarma sigue sonando...");
+            this.trigger(); // ¡Castigo! Vuelve a sonar
         }
     }
 

@@ -20,8 +20,6 @@ Para ejecutar este proyecto en tu entorno local:
    `javac src/*.java` y luego `java src.Main`
 5. Sigue las instrucciones por consola para interactuar con el reto matemático.
 
-![Captura de la Ejecución Exitosa](assets/ejecucion.png)
-
 ---
 
 ## 📐 Diseño y Arquitectura
@@ -48,7 +46,53 @@ flowchart LR
 
     Detener -.->|include| Reto
     Detener -.->|include| Informe
+```
 
+### 2. Diagrama de Clases (UML)
+El diseño sigue los principios de la Programación Orientada a Objetos, garantizando la encapsulación y la correcta delegación de responsabilidades:
+
+```mermaid
+classDiagram
+    class AlarmManager {
+        - List~Alarm~ alarms
+        - boolean isVacationModeActive
+        + addAlarm(Alarm)
+        + deleteAlarm(String) boolean
+        + toggleVacationMode()
+        + checkAndTriggerAlarms(LocalTime, DayOfWeek)
+        + listAllAlarms()
+    }
+    
+    class Alarm {
+        - String id
+        - LocalTime time
+        - boolean isActive
+        - int snoozeCount
+        + toggleActive()
+        + snooze(int)
+        + stop()
+        + trigger()
+        + generateSleepReport()
+    }
+
+    class SoundProfile {
+        - String toneName
+        - int volumeLevel
+        + play()
+    }
+
+    class MathChallenge {
+        + solveChallenge() boolean
+    }
+
+    AlarmManager "1" *-- "0..*" Alarm : gestiona >
+    Alarm "1" --> "1" SoundProfile : usa >
+    Alarm "1" --> "1" MathChallenge : requiere >
+```
+
+---
+
+## 🧠 Reflexiones y Toma de Decisiones
 
 ### 1. Decisiones de Diseño y SOLID
 * **Encapsulación estricta:** Todos los atributos de las clases (`Alarm`, `SoundProfile`, etc.) son privados. El estado solo se modifica a través de métodos controlados (ej. `snooze()` o `toggleVacationMode()`).

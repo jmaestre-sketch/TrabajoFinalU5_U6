@@ -20,7 +20,7 @@ Para ejecutar este proyecto en tu entorno local:
    `javac src/*.java` y luego `java src.Main`
 5. Sigue las instrucciones por consola para interactuar con el reto matemático.
 
-**Nota:** En la carpeta `assets/` se incluye una captura (`ejecucion.png`) demostrando la ejecución sin errores del flujo completo.
+![Captura de la Ejecución Exitosa](assets/ejecucion.png)
 
 ---
 
@@ -30,15 +30,24 @@ Para ejecutar este proyecto en tu entorno local:
 El siguiente diagrama muestra las interacciones principales del usuario con el sistema:
 
 ```mermaid
-usecaseDiagram
-    actor Usuario
-    Usuario --> (Crear/Añadir Alarma)
-    Usuario --> (Posponer Alarma - Snooze)
-    Usuario --> (Detener Alarma)
-    Usuario --> (Activar Modo Vacaciones)
-    (Detener Alarma) ..> (Resolver Reto Matemático) : <<include>>
-    (Detener Alarma) ..> (Generar Informe de Sueño) : <<include>>
+flowchart LR
+    Usuario((Usuario))
+    
+    Crear([Crear/Añadir Alarma])
+    Posponer([Posponer Alarma])
+    Detener([Detener Alarma])
+    Vacaciones([Activar Modo Vacaciones])
+    
+    Reto([Resolver Reto Matemático])
+    Informe([Generar Informe de Sueño])
 
+    Usuario --> Crear
+    Usuario --> Posponer
+    Usuario --> Detener
+    Usuario --> Vacaciones
+
+    Detener -. "<< include >>" .-> Reto
+    Detener -. "<< include >>" .-> Informe
     ## 🧠 Reflexiones y Toma de Decisiones
 
 ### 1. Decisiones de Diseño y SOLID
@@ -53,6 +62,9 @@ Durante el desarrollo, la mayor dificultad técnica no fue el código Java en s�
 He utilizado Inteligencia Artificial (Gemini) como un "tutor técnico" y compañero de programación.
 * **Uso:** Me ayudó a estructurar la arquitectura del código, a redactar la lógica de negocio paso a paso garantizando el cumplimiento estricto de los requisitos, y a diagnosticar los problemas de Git en la consola de Windows.
 * **Validación:** No se ha realizado un copiado ciego. He validado manualmente cada funcionalidad ejecutando simulaciones exhaustivas en el archivo `Main.java`, interactuando por consola con el código de `MathChallenge` para forzar aciertos y fallos, comprobando la acumulación de estadísticas tras varios `snooze` seguidos y confirmando en la terminal que los merges se realizaban de forma limpia.
+
+---
+
 ## ⚖️ Autoevaluación
 
 Basándome en la rúbrica proporcionada por el profesor, propongo la siguiente calificación:

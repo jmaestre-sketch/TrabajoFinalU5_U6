@@ -47,21 +47,24 @@ public class Alarm {
 
     // Detener alarma
     // Detener alarma con validación del reto matemático
+// Detener alarma con validación del reto matemático e informe de sueño
     public void stop() {
         System.out.println("[STOP] Intentando detener la alarma '" + label + "'...");
-        
-        // Llamamos al reto. El programa se pausará aquí esperando la respuesta del usuario.
         boolean solved = mathChallenge.solveChallenge();
 
         if (solved) {
             System.out.println("[ALARMA] '" + label + "' detenida definitivamente.");
+            
+            // NUEVO: Mostramos las estadísticas de sueño acumuladas justo al apagarla
+            generateSleepReport();
+
             if (repeatDays == null || repeatDays.isEmpty()) {
                 this.isActive = false;
-                System.out.println("[ALARMA] '" + label + "' se ha desactivado automáticamente por no ser recurrente.");
+                System.out.println("[ALARMA] '" + label + "' se ha desactivado automáticamente.");
             }
         } else {
             System.out.println("[ALARMA] ¡No pudiste detenerla! La alarma sigue sonando...");
-            this.trigger(); // ¡Castigo! Vuelve a sonar
+            this.trigger();
         }
     }
 
@@ -94,4 +97,24 @@ public class Alarm {
     public void setSoundProfile(SoundProfile soundProfile) { this.soundProfile = soundProfile; }
 
     public int getSnoozeCount() { return snoozeCount; }
+
+
+    // NUEVO MÉTODO: Genera el perfil de sueño basado en las estadísticas de snooze
+    public void generateSleepReport() {
+        System.out.println("\n=============================================");
+        System.out.println("📊 INFORME DE PERFIL DE SUEÑO - ALARMA: '" + label + "'");
+        System.out.println("=============================================");
+        System.out.println("-> Veces que pospusiste la alarma: " + snoozeCount);
+        System.out.print("-> Diagnóstico de tu perfil: ");
+
+        // Lógica analítica según el comportamiento del usuario
+        if (snoozeCount == 0) {
+            System.out.println("⚡ ¡ESPARTANO! Te has levantado a la primera. Perfil: Madrugador Pro.");
+        } else if (snoozeCount >= 1 && snoozeCount <= 2) {
+            System.out.println("☕ DURMIENTE ESTÁNDAR. Un par de minutos más de descanso, pero cumples.");
+        } else {
+            System.out.println("💤 MARMOTA PROFESIONAL. Tienes un problema serio con las sábanas. ¡Espabila!");
+        }
+        System.out.println("=============================================\n");
+    }
 }
